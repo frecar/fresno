@@ -49,7 +49,8 @@ def genre(title):
 
     csv += '"'
     for movie in result[0]['genre']:
-        csv += '%s, ' % movie['name']
+        genre = movie['name'].lower().capitalize()
+        csv += '%s, ' % genre
     csv += '"'
 
     response = make_response(csv)
