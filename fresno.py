@@ -36,7 +36,7 @@ def actors(title):
 
 @app.route('/movie/<title>/genre')
 def genre(title):
-    csv = "Genre\n"
+    csv = "Genre, "
 
     url = "https://www.googleapis.com/freebase/v1/mqlread?query=[{%20%22name%22:%20%22"
     url += title
@@ -47,8 +47,10 @@ def genre(title):
     text = r.text.decode('unicode-escape')
     result = json.loads(text)['result']
 
+    csv += '"'
     for movie in result[0]['genre']:
-        csv += "%s \n" % movie['name']
+        csv += '%s, ' % movie['name']
+    csv += '"'
 
     response = make_response(csv)
     # This is the key: Set the right header for the response
