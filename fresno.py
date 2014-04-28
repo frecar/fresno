@@ -60,17 +60,49 @@ def genre(title):
     response.headers["Content-Disposition"] = "attachment; filename=genre.csv"
     return response
 
-@app.route('/<title>/meta')
-def meta(title):
-    csv = "Name, initial_release_date, directed_by\n"
 
-    url = "https://www.googleapis.com/freebase/v1/mqlread?query=[%7B%20%22name%22:%20%22Elling%22,%20%22mid%22:%20null,%20%22primary_language%22:%20[%7B%7D],%20%22initial_release_date%22:%20null,%20%22type%22:%20%22/film/film%22%20%7D]"
+@app.route('/movie/<title>/meta')
+def meta(title):
+    csv = "Name, runtime, initial_release_date, directed_by, topic\n"
+
+    url = "https://www.googleapis.com/freebase/v1/mqlread?query=[{%20%22name%22:%20%22"
+    url += title
+    url += "%22,%20%22mid%22:%20null,%20%22runtime%22:%20[{%20%22runtime%22:%20null," \
+           "%20%22limit%22:%201%20}],%20%22country%22:%20null,%20%22primary_language" \
+           "%22:%20null,%20%22initial_release_date%22:%20null,%20%22directed_by%22:" \
+           "%20null,%20%22type%22:%20%22/film/film%22%20}]"
 
     r = requests.get(url)
     text = r.text.decode('unicode-escape')
     meta_data = json.loads(text)['result'][0]
 
-    csv += "%s, %s, %s" % (title, meta_data['initial_release_date'], meta_data['directed_by'])
+    mid = meta_data['mid']
+
+    topic_data = ""
+
+    try:
+        topic_url = "https://www.googleapis.com/freebase/v1/topic%s?filter=/common/topic" % mid
+
+        r = requests.get(topic_url)
+        text = r.text
+        topic_data_values = json.loads(text)["property"]['/common/topic/article']["values"]
+
+        for topic in topic_data_values:
+            for topic_text in topic['property']['/common/document/text']['values']:
+                topic_data += topic_text['value']
+
+    except:
+        pass
+
+    try:
+        runtime = meta_data['runtime'][0]['runtime']
+    except:
+        runtime = ""
+
+
+    csv += "%s, %s, %s, %s, %s" % (meta_data['name'], runtime,
+                                   meta_data['initial_release_date'],
+                                   meta_data['directed_by'], topic_data)
 
     response = make_response(csv)
     # This is the key: Set the right header for the response
