@@ -116,8 +116,15 @@ def meta(title):
     except:
         pass
 
+    year = ""
+
+    try:
+        year = meta_data['initial_release_date'][:4]
+    except:
+        pass
+
     csv += "%s, %s, %s, %s, %s" % (meta_data['name'], runtime,
-                                   meta_data['initial_release_date'],
+                                   year,
                                    directors, topic_data)
 
     response = make_response(csv)
