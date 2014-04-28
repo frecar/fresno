@@ -73,7 +73,7 @@ def meta(title):
     url += "%22,%20%22mid%22:%20null,%20%22runtime%22:%20[{%20%22runtime%22:%20null," \
            "%20%22limit%22:%201%20}],%20%22country%22:%20[{%20%22name%22:%20null%20}]," \
            "%20%22primary_language%22:%20null,%20%22initial_release_date%22:%20null,%20%" \
-           "22directed_by%22:%20[{%20%22name%22:%20null%20}]," \
+           "22directed_by%22:%20[{%20%22name%22:%20null,%20%22optional%22:%20true%20}]," \
            "%20%22type%22:%20%22/film/film%22%20}]"
     url += "&key=AIzaSyDYzSdqswRtpGmS-Icb5esmKCdyKjdYNEM"
 
@@ -107,11 +107,13 @@ def meta(title):
     directors = ""
 
     try:
-        directors = '"'
-        for director in meta_data['directed_by'][0:1]:
-            directors += director['name'] + ","
 
-        directors = directors[0:len(directors)-1] + '"'
+        if len(meta_data['directed_by']) > 0:
+            directors = '"'
+            for director in meta_data['directed_by'][0:1]:
+                directors += director['name'] + ","
+
+            directors = directors[0:len(directors)-1] + '"'
 
     except:
         pass
