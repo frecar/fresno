@@ -106,8 +106,6 @@ def meta(title):
 
     directors = directors[0:len(directors)-1] + '"'
 
-    print directors
-
     csv += "%s, %s, %s, %s, %s" % (meta_data['name'], runtime,
                                    meta_data['initial_release_date'],
                                    directors, topic_data)
