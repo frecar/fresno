@@ -73,6 +73,8 @@ def meta(title):
            "22directed_by%22:%20[{%20%22name%22:%20null%20}]," \
            "%20%22type%22:%20%22/film/film%22%20}]"
 
+    print url
+
     r = requests.get(url)
     text = r.text.decode('unicode-escape')
     meta_data = json.loads(text)['result'][0]
