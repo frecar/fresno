@@ -68,9 +68,10 @@ def meta(title):
     url = "https://www.googleapis.com/freebase/v1/mqlread?query=[{%20%22name%22:%20%22"
     url += title
     url += "%22,%20%22mid%22:%20null,%20%22runtime%22:%20[{%20%22runtime%22:%20null," \
-           "%20%22limit%22:%201%20}],%20%22country%22:%20null,%20%22primary_language" \
-           "%22:%20null,%20%22initial_release_date%22:%20null,%20%22directed_by%22:" \
-           "%20null,%20%22type%22:%20%22/film/film%22%20}]"
+           "%20%22limit%22:%201%20}],%20%22country%22:%20[{%20%22name%22:%20null%20}]," \
+           "%20%22primary_language%22:%20null,%20%22initial_release_date%22:%20null,%20%" \
+           "22directed_by%22:%20[{%20%22name%22:%20null%20}]," \
+           "%20%22type%22:%20%22/film/film%22%20}]"
 
     r = requests.get(url)
     text = r.text.decode('unicode-escape')
@@ -99,10 +100,17 @@ def meta(title):
     except:
         runtime = ""
 
+    directors = '"'
+    for director in meta_data['directed_by']:
+        directors += director['name'] + ","
+
+    directors = directors[0:len(directors)-1] + '"'
+
+    print directors
 
     csv += "%s, %s, %s, %s, %s" % (meta_data['name'], runtime,
                                    meta_data['initial_release_date'],
-                                   meta_data['directed_by'], topic_data)
+                                   directors, topic_data)
 
     response = make_response(csv)
     # This is the key: Set the right header for the response
