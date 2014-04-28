@@ -36,7 +36,7 @@ def actors(title):
 
 @app.route('/movie/<title>/genre')
 def genre(title):
-    csv = "Genre, "
+    csv = "Genre\n"
 
     url = "https://www.googleapis.com/freebase/v1/mqlread?query=[{%20%22name%22:%20%22"
     url += title
