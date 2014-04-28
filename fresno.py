@@ -34,6 +34,49 @@ def actors(title):
     return response
 
 
+@app.route('/movie/<title>/genre')
+def genre(title):
+    csv = "Genre\n"
+
+    url = "https://www.googleapis.com/freebase/v1/mqlread?query=[{%20%22name%22:%20%22"
+    url += title
+    url += "%22,%20%22mid%22:%20null,%20%22genre%22:%20[{%20%22name%22:%20null%20}]," \
+           "%20%22type%22:%20%22/film/film%22%20}]"
+
+    r = requests.get(url)
+    text = r.text.decode('unicode-escape')
+    result = json.loads(text)['result']
+
+    for movie in result[0]['genre']:
+        csv += "%s \n" % movie['name']
+
+    response = make_response(csv)
+    # This is the key: Set the right header for the response
+    # to be downloaded, instead of just printed on the browser
+
+    response.headers["Content-Disposition"] = "attachment; filename=genre.csv"
+    return response
+
+@app.route('/<title>/meta')
+def meta(title):
+    csv = "Name, initial_release_date, directed_by\n"
+
+    url = "https://www.googleapis.com/freebase/v1/mqlread?query=[%7B%20%22name%22:%20%22Elling%22,%20%22mid%22:%20null,%20%22primary_language%22:%20[%7B%7D],%20%22initial_release_date%22:%20null,%20%22type%22:%20%22/film/film%22%20%7D]"
+
+    r = requests.get(url)
+    text = r.text.decode('unicode-escape')
+    meta_data = json.loads(text)['result'][0]
+
+    csv += "%s, %s, %s" % (title, meta_data['initial_release_date'], meta_data['directed_by'])
+
+    response = make_response(csv)
+    # This is the key: Set the right header for the response
+    # to be downloaded, instead of just printed on the browser
+
+    response.headers["Content-Disposition"] = "attachment; filename=actors.csv"
+    return response
+
+
 @app.route('/actor/<actor>/norwegian-movies')
 def movies_by_actor(actor):
     csv = "Name\n"
