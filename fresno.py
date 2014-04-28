@@ -77,8 +77,6 @@ def meta(title):
            "%20%22type%22:%20%22/film/film%22%20}]"
     url += "&key=AIzaSyDYzSdqswRtpGmS-Icb5esmKCdyKjdYNEM"
 
-    print url
-
     r = requests.get(url)
     text = r.text.decode('unicode-escape')
     meta_data = json.loads(text)['result'][0]
@@ -106,11 +104,17 @@ def meta(title):
     except:
         runtime = ""
 
-    directors = '"'
-    for director in meta_data['directed_by']:
-        directors += director['name'] + ","
+    directors = ""
 
-    directors = directors[0:len(directors)-1] + '"'
+    try:
+        directors = '"'
+        for director in meta_data['directed_by'][0:1]:
+            directors += director['name'] + ","
+
+        directors = directors[0:len(directors)-1] + '"'
+
+    except:
+        pass
 
     csv += "%s, %s, %s, %s, %s" % (meta_data['name'], runtime,
                                    meta_data['initial_release_date'],
