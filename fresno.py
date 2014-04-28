@@ -4,6 +4,7 @@ import json
 import requests
 
 from flask import Flask, make_response
+import urllib
 
 app = Flask(__name__)
 app.debug = True
@@ -14,7 +15,7 @@ def actors(title):
     csv = "Name\n"
 
     url = "https://www.googleapis.com/freebase/v1/mqlread?query=[{%20%22name%22:%20%22"
-    url += title
+    url += title.replace(" ", "%20")
     url += "%22,%20%22mid%22:%20null,%20%22starring%22:%20[{%20%22actor%22:%20[{%20%22" \
            "name%22:%20null%20}]%20}],%20%22country%22:%20[{%20%22name%22:%20%22" \
            "Norway%22%20}],%20%22type%22:%20%22/film/film%22%20}]"
@@ -39,7 +40,7 @@ def genre(title):
     csv = "Genre\n"
 
     url = "https://www.googleapis.com/freebase/v1/mqlread?query=[{%20%22name%22:%20%22"
-    url += title
+    url += title.replace(" ", "%20")
     url += "%22,%20%22mid%22:%20null,%20%22genre%22:%20[{%20%22name%22:%20null%20}]," \
            "%20%22type%22:%20%22/film/film%22%20}]"
 
@@ -66,14 +67,12 @@ def meta(title):
     csv = "Name, runtime, initial_release_date, directed_by, topic\n"
 
     url = "https://www.googleapis.com/freebase/v1/mqlread?query=[{%20%22name%22:%20%22"
-    url += title
+    url += title.replace(" ", "%20")
     url += "%22,%20%22mid%22:%20null,%20%22runtime%22:%20[{%20%22runtime%22:%20null," \
            "%20%22limit%22:%201%20}],%20%22country%22:%20[{%20%22name%22:%20null%20}]," \
            "%20%22primary_language%22:%20null,%20%22initial_release_date%22:%20null,%20%" \
            "22directed_by%22:%20[{%20%22name%22:%20null%20}]," \
            "%20%22type%22:%20%22/film/film%22%20}]"
-
-    print url
 
     r = requests.get(url)
     text = r.text.decode('unicode-escape')
@@ -126,7 +125,7 @@ def movies_by_actor(actor):
 
     url = "https://www.googleapis.com/freebase/v1/mqlread?query=[{%20%22name%22:%20null," \
           "%20%22mid%22:%20null,%20%22starring%22:%20[{%20%22actor%22:%20[{%20%22name%22:%20%22"
-    url += actor
+    url += actor.replace(" ", "%20")
     url += "%22%20}]%20}],%20%22country%22:%20[{%20%22name%22:%20%22Norway%22%20}]," \
            "%20%22type%22:%20%22/film/film%22%20}]"
 
